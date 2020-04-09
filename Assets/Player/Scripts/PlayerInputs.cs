@@ -1,6 +1,8 @@
 ﻿using CodeMonkey;
 using CodeMonkey.Utils;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public enum State
 {
@@ -15,7 +17,7 @@ public class PlayerInputs : MonoBehaviour
 {
     [SerializeField]
     [Header("Movment Inputs Player")]
-     private Vector2 movment;
+    private Vector2 movment;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private State currentState;
     [SerializeField] private Animator _anim;
@@ -23,6 +25,7 @@ public class PlayerInputs : MonoBehaviour
     [SerializeField] private Vector3 moveDir;
     [SerializeField] private float _moveSpeed;
     [SerializeField] private LayerMask dashLayerMask;
+    [SerializeField] private HealthSystem _playerHealthSystem;
 
 
     [Header("Attack")]
@@ -31,10 +34,18 @@ public class PlayerInputs : MonoBehaviour
     [SerializeField] private Transform attacPos;
     [SerializeField] private float attacRange;
     [SerializeField] private LayerMask whatISEnemies;
-
+    [SerializeField] private GameObject bloodEffect;
     [Header("Enemy")]
     [SerializeField] private HealthSystem enemyHealthSystem;
-   // [SerializeField] private GameObject enemyObject;
+    
+
+
+
+
+
+    [SerializeField]
+    [Header("UI")]
+    private Slider healthBar;
 
 
 
@@ -47,6 +58,7 @@ public class PlayerInputs : MonoBehaviour
 
     void Update()
     {
+
         switch (state)
         {
             case State.normal:
@@ -61,7 +73,7 @@ public class PlayerInputs : MonoBehaviour
 
 
 
-                
+
         }
     }
 
@@ -70,11 +82,14 @@ public class PlayerInputs : MonoBehaviour
 
     public void FixedUpdate()
     {
-        //rb.MovePosition(rb.position + movment * moveSpeed * Time.fixedDeltaTime);
+
         rb.velocity = moveDir * _moveSpeed;
+
         _anim.SetFloat("Speed", movment.sqrMagnitude);
 
         Rotate();
+
+
 
     }
 
@@ -84,6 +99,7 @@ public class PlayerInputs : MonoBehaviour
         movment.x = Input.GetAxisRaw("Horizontal");
         movment.y = Input.GetAxisRaw("Vertical");
         moveDir = new Vector3(movment.x, movment.y).normalized;
+
     }
     public void Rotate()
     {
@@ -101,22 +117,21 @@ public class PlayerInputs : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            
+
 
             _anim.SetTrigger("Interact");
             Attack();
             state = State.attack;
-            //moveSpeed = moveSpeed /2f;
             Vector3 mousePosition = UtilsClass.GetMouseWorldPosition();
             Vector3 attackDir = mousePosition = transform.position.normalized;
             float attackOffset = 10f;
             Vector3 attackPosition = transform.position + attackDir * attackOffset;
-            
+
         }
         else
         {
             state = State.normal;
-            // moveSpeed = 2f;
+            
         }
 
     }
@@ -130,15 +145,15 @@ public class PlayerInputs : MonoBehaviour
             Vector3 dasPosition = transform.position + moveDir * dashDistance;
 
             RaycastHit2D raycastHit2D = Physics2D.Raycast(transform.position, moveDir, dashDistance, dashLayerMask);
-            if(raycastHit2D.collider != null)
+            if (raycastHit2D.collider != null)
             {
                 dasPosition = raycastHit2D.point;
             }
-            
+
 
 
             rb.MovePosition(transform.position + moveDir * dashDistance);
-            
+
             //transform.position += lastMoveDir * dashDistance;
         }
     }
@@ -149,16 +164,16 @@ public class PlayerInputs : MonoBehaviour
         Collider2D[] enemisToAction = Physics2D.OverlapCircleAll(attacPos.position, attacRange, whatISEnemies);
         foreach (Collider2D enemy in enemisToAction)
         {
-            
+
             Debug.Log("Attack Method Player");
 
             float attack = 10f;
             float fullAttack = attack + Random.Range(1, 5);
-
-           // enemy.GetComponent<Animator>().SetTrigger("Damaged");
+            Instantiate(bloodEffect, enemy.transform.position, enemy.transform.rotation);
+            // enemy.GetComponent<Animator>().SetTrigger("Damaged");
             enemy.GetComponent<HealthSystem>().Damage(fullAttack);
-            
-            
+
+
             //enemyHealthSystem.Damage(fullAttack);
             CMDebug.TextPopupMouse(fullAttack.ToString());
 
@@ -175,6 +190,31 @@ public class PlayerInputs : MonoBehaviour
 
 
 
+    void OnTriggerEnter2D(Collider2D col)
+    {
+
+        switch (col.name)
+        {
+            case ("BulletPrefab(Clone)"):
+                _playerHealthSystem.Damage(10f);
+                Destroy(col.gameObject, 1);
+                break;
+            case ("BullerPrefab2Laser(Clone)"):
+                _playerHealthSystem.Damage(10
+                    );
+
+                Destroy(col.gameObject, 1);
+                break;
+            case ("BullerPrefab3Laser(Clone)"):
+                _playerHealthSystem.Damage(40f);
+
+                Destroy(col.gameObject, 1);
+                break;
+        }
+
+
+
+    }
 
 
 

@@ -3,7 +3,10 @@
 public class Alien2 : EnemyAI
 {
     [SerializeField] private Animator anim;
-    // Start is called before the first frame update
+    [SerializeField] private float TimeBetweenShots;
+    [SerializeField] private float timeSinceLastShot;
+    [SerializeField] private float baseAttack;
+    [SerializeField] private HealthSystem playerHS;
     [SerializeField] private  float _attackRadiusDistanceRange = 30f;
 
     void Start()
@@ -59,6 +62,24 @@ public class Alien2 : EnemyAI
 
 
         }
+
+
+    }
+
+    public void Attack()
+    {
+
+        float randomBonusHit = (float)Random.Range(1, 5);
+        float batfullAttack = baseAttack + randomBonusHit;
+
+
+
+        playerHS.Damage(batfullAttack);
+
+
+
+
+
 
 
     }

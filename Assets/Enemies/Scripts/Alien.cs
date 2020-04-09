@@ -3,12 +3,19 @@
 public class Alien : EnemyAI
 {
     [SerializeField] private Animator anim;
+    [SerializeField] private  float TimeBetweenShots;
+    [SerializeField] private float timeSinceLastShot;
+    [SerializeField] private float baseAttack;
+    [SerializeField] private HealthSystem playerHS;
 
-
-    // Start is called before the first frame update
+   
+    
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        
+
 
     }
     void Update()
@@ -39,11 +46,27 @@ public class Alien : EnemyAI
             anim.SetBool("Attack", false);
             rb.MovePosition((Vector2)transform.position + (direction * moveSpeed * Time.deltaTime));
             transform.position = Vector2.MoveTowards(transform.position, player.transform.position, moveSpeed * Time.deltaTime);
-            Debug.Log("Alien-1 Move Character");
+
 
         }
         else if ((Vector2.Distance(player.transform.position, transform.position) < _attackRadiusDistance))
         {
+
+
+            if (Time.time > timeSinceLastShot + TimeBetweenShots)
+            {
+
+                //StartCoroutine(DmgSpawn());
+                Attack();
+
+
+
+
+                timeSinceLastShot = Time.time;
+
+
+
+            }
             anim.SetBool("isMoving", false);
             anim.SetBool("Attack", true);
 
@@ -63,6 +86,27 @@ public class Alien : EnemyAI
             transform.position = new Vector2(transform.position.x + diffrence.x, transform.position.y + diffrence.y);
         }
     }
+
+
+
+    public void Attack()
+    {
+
+        float randomBonusHit = (float)Random.Range(1, 5);
+       float  batfullAttack = baseAttack + randomBonusHit;
+
+
+
+        playerHS.Damage(batfullAttack);
+
+
+
+
+
+
+
+    }
+
 }
 
 

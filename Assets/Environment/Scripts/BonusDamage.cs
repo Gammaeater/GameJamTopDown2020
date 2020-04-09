@@ -26,9 +26,9 @@ public class BonusDamage : MonoBehaviour
         if (_other.gameObject.tag == "Player")
         {
             healthSystem.Heal(500f);
-            Debug.Log("HpAdded To Health System");
+            Debug.Log("Bonud Damage profit");
 
-            Destroy(this);
+            Destroy(gameObject);
 
 
 

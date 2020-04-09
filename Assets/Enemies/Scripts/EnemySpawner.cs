@@ -24,7 +24,7 @@ public class EnemySpawner : Wave
         //Instantiate a random enemy.
         int enemyIndex = Random.Range(0, enemies.Length);
         // Instantiate(enemies[enemyIndex], enposition, transform.rotation);
-        GameObject newEnemy = (GameObject)Instantiate(enemies[enemyIndex], enposition, transform.rotation);
+        GameObject newEnemy = Instantiate(enemies[enemyIndex], enposition, transform.rotation);
         newEnemy.name = "Alien";
 
     }

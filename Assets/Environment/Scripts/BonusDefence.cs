@@ -1,37 +1,32 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class BonusDefence : MonoBehaviour
 {
     private HealthSystem healthSystem;
+    public float _health;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        // Update is called once per frame
-        healthSystem = GameObject.FindGameObjectWithTag("Player").GetComponent<HealthSystem>();
+        if (GameObject.FindGameObjectWithTag("Player") != null)
+        {
+            _health = GameObject.FindGameObjectWithTag("Player").GetComponent<HealthSystem>().GetHealth();
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        
-    }
 
+    }
     void OnTriggerEnter2D(Collider2D _other)
     {
 
         if (_other.gameObject.tag == "Player")
         {
-            healthSystem.Heal(500f);
-            Debug.Log("HpAdded To Health System");
 
-            Destroy(this);
-
-
-
+            GameObject.FindGameObjectWithTag("Player").GetComponent<HealthSystem>().Heal(100f);
 
         }
     }

@@ -12,6 +12,7 @@ public class EnemyShot : MonoBehaviour
     [SerializeField] private Vector3 thisPos;
     [SerializeField] private float timeSinceLastRangeShot;
     [SerializeField] private float TimeBetweenRangeShots ;
+    
 
 
     // Start is called before the first frame update
@@ -26,7 +27,7 @@ public class EnemyShot : MonoBehaviour
         float distance = Vector3.Distance(target.transform.position, transform.position);
 
         {
-            if (distance < 100f )//&& target.enemyHealtSystem.GetHealth() >= 1)
+            if (distance < 100f )
             {
                 if (Time.time > timeSinceLastRangeShot + TimeBetweenRangeShots)
                 {
@@ -34,7 +35,7 @@ public class EnemyShot : MonoBehaviour
 
                     Shoot();
 
-
+                    
 
 
 

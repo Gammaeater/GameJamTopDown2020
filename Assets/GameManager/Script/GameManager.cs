@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,25 +8,28 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] public static GameManager current;
 
-    [SerializeField] public Text healthText;
-
-
-    [SerializeField] public HealthSystem playerHealthShystem;
-    [SerializeField] public GameObject uAreDead;
-    [SerializeField] public float dethsequenceDuration = 1.5f;
-
+    [SerializeField] float TimeToWin;
     [SerializeField] float totalGameTime;
     [SerializeField] bool isGameOver;
+    [SerializeField] public GameObject player;
 
 
 
-    // Start is called before the first frame update
+
+
+    
     void Awake()
     {
         MakeSingleton();
 
+        // FindPlayerRefference();
 
+    }
 
+    private void FindPlayerRefference()
+    {
+        player = GameObject.FindGameObjectWithTag("Player");
+        HealthSystem health = player.GetComponent<HealthSystem>();
     }
 
 
@@ -41,7 +43,11 @@ public class GameManager : MonoBehaviour
         }
         totalGameTime = Time.timeSinceLevelLoad;
 
-        //UIManager.UpdateTimeUI(time: totalGameTime);
+        UIManager.UpdateTimeUI(time: totalGameTime);
+
+
+
+
     }
 
     public static bool IsGameOver()
@@ -51,23 +57,25 @@ public class GameManager : MonoBehaviour
             return false;
         }
 
+
         return current.isGameOver;
 
     }
     public static void PlayerDied()
     {
+        //SceneManager.LoadScene("DeadScene");
 
         if (current == null)
         {
             return;
         }
-        //uAreDead.SetActive(true);
-
-  
+        current.isGameOver = true;
 
 
 
-        current.Invoke("ShowDeadOptions", current.dethsequenceDuration);
+
+
+
 
     }
     public static void PlayerWon()
@@ -76,6 +84,8 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
+
+
 
         current.isGameOver = true;
 
@@ -86,12 +96,11 @@ public class GameManager : MonoBehaviour
 
     public void RestartScene()
     {
-        // toxicBarrels.Clear();
-        //uAreDead.SetActive(true);
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         current.totalGameTime -= totalGameTime;
         //  UIManager.UpdateTimeUI(current.totalGameTime);
-        //uAreDead.SetActive(false);
+        ;
 
 
     }
@@ -106,25 +115,13 @@ public class GameManager : MonoBehaviour
             return;
         }
         current = this;
-        //uAreDead = GameObject.FindWithTag("uareDeadUI");
-        //uAreDead.SetActive(false);
-        //toxicBarrels = new List<ToxicBarrel>();
-        // currentToxicBarrels = new List<ToxicBarrel>();
+
 
         DontDestroyOnLoad(gameObject);
     }
 
 
-    public void UpdateHealth()
-    {
-
-        healthText.text = playerHealthShystem.GetHealth().ToString("0");
-
-
-
-
-    }
-
+   
 
 
 }
